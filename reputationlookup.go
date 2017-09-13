@@ -134,10 +134,8 @@ func main() {
 
 	// http://localhost:8080/getreputation/123.123.123.123 returns sender score reputation status
 
-	//returns sender score reputation code or
-
-	//router.GET("/getreputation/", getreputation)
 	router.GET("/getreputation/", getreputation)
+	router.GET("/", usage)
 
 	router.Run()
 
