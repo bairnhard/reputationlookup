@@ -126,6 +126,8 @@ func inc(ip net.IP) {
 	}
 }
 
+func usage() {} // start page
+
 func main() {
 
 	router := gin.Default()
