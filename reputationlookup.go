@@ -70,7 +70,6 @@ func getreputation(ip *gin.Context) {
 
 			repcode, err := replookup(hostarray[i])
 			if err != nil {
-				// log.Fatalln(" Lookup error: ", err)
 				repcode = "host not found"
 			}
 
@@ -129,8 +128,6 @@ func inc(ip net.IP) {
 
 func usage(c *gin.Context) {
 
-	// Call the HTML method of the Context to render a template
-
 	c.HTML(http.StatusOK, "index.html", nil)
 
 }
@@ -140,12 +137,8 @@ func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("*.html")
 
-	// Usage:
-
-	// http://localhost:8080/getreputation/123.123.123.123 returns sender score reputation status
-
-	router.GET("/getreputation/", getreputation)
 	router.GET("/", usage)
+	router.GET("/getreputation/", getreputation)
 
 	router.Run()
 
