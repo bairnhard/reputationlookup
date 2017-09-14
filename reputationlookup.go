@@ -1,12 +1,11 @@
 package main
 
-//test
 import (
-	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,9 +32,8 @@ func reverseIPAddress(ip net.IP) string {
 
 		return strings.Join(reverseSlice, ".")
 
-	} else {
-		panic("invalid IPv4 address")
 	}
+	return ""
 }
 
 func getreputation(ip *gin.Context) {
@@ -45,14 +43,21 @@ func getreputation(ip *gin.Context) {
 
 	if ipa != "" { // we have an IP address request
 
+		ipa2 := net.ParseIP(ipa)
+		if ipa2 == nil {
+			ip.JSON(500, "Invalid Address")
+			log.Println(time.Now(), "Invalid Address: ", ipa)
+			return
+		}
+
 		repcode, err := replookup(ipa)
 		if err != nil {
-			log.Fatalln(" Lookup error: ", err)
+			log.Println(" Lookup error: ", err)
 
 		}
 		c := represult{ipa, repcode}
 
-		fmt.Println("repcode", c.REP)
+		//fmt.Println("repcode", c.REP)
 
 		ip.IndentedJSON(200, c)
 
@@ -60,7 +65,8 @@ func getreputation(ip *gin.Context) {
 
 		hostarray, err := hosts(ipn) // convert CIDR Network into array of hosts
 		if err != nil {
-			log.Fatalln("CIDR error: ", err)
+			ip.JSON(500, "Invalid CIDR Request")
+			log.Println(time.Now(), "Invalid CIDR Request: ", ipn)
 
 		}
 		var c []represult
@@ -79,7 +85,9 @@ func getreputation(ip *gin.Context) {
 		ip.IndentedJSON(200, c)
 
 	} else {
-		log.Fatalln("Query Error", ip)
+		// log.Fatalln("Query Error", ip)
+		ip.JSON(500, "Invalid Request")
+		log.Println(time.Now(), "Invalid Request: ", ip)
 	}
 
 }
@@ -93,10 +101,9 @@ func replookup(ipa string) (string, error) { // lookup ip reputation for given I
 
 	reputation, err := net.LookupHost(lookuptarget)
 	if err != nil {
-		//log.Fatalln("host not found")
-		return "", err
-		//ip.Status(411)
+		return "", err //host not found...
 	}
+
 	addressSlice := strings.Split(reputation[0], ".")
 	repcode := addressSlice[3]
 	return repcode, nil
