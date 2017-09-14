@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -126,11 +127,18 @@ func inc(ip net.IP) {
 	}
 }
 
-func usage() {} // start page
+func usage(c *gin.Context) {
+
+	// Call the HTML method of the Context to render a template
+
+	c.HTML(http.StatusOK, "index.html", nil)
+
+}
 
 func main() {
 
 	router := gin.Default()
+	router.LoadHTMLGlob("*.html")
 
 	// Usage:
 
