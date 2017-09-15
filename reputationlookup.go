@@ -146,7 +146,7 @@ func main() {
 
 	router.GET("/", usage)
 	router.GET("/getreputation/", getreputation)
-
+	log.Println(time.Now(), "reputation lookup started")
 	router.Run()
 
 }
