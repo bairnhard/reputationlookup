@@ -38,8 +38,8 @@ func reverseIPAddress(ip net.IP) string {
 
 func getreputation(ip *gin.Context) {
 
-	ipa, _ := ip.GetQuery("IP")
-	ipn, _ := ip.GetQuery("NET")
+	ipa, _ := ip.GetQuery("ips")
+	ipn, _ := ip.GetQuery("net")
 
 	if ipa != "" { // we have an IP address request
 
@@ -145,7 +145,7 @@ func main() {
 	router.LoadHTMLGlob("*.html")
 
 	router.GET("/", usage)
-	router.GET("/getreputation/", getreputation)
+	router.GET("/reputation/", getreputation)
 	log.Println(time.Now(), "reputation lookup started")
 	router.Run()
 
