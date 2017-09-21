@@ -42,20 +42,33 @@ func getreputation(ip *gin.Context) {
 	ipn, _ := ip.GetQuery("net")
 
 	if ipa != "" { // we have an IP address request
+		hostarray := strings.Split(ipa, ",")
+		var c []represult
+		c = make([]represult, len(hostarray))
 
-		ipa2 := net.ParseIP(ipa)
-		if ipa2 == nil {
-			ip.JSON(500, "Invalid Address")
-			log.Println(time.Now(), "Invalid Address: ", ipa)
-			return
+		for i, v := range hostarray {
+
+			repcode, err := replookup(hostarray[i])
+			if err != nil {
+				repcode = "host not found"
+			}
+
+			c[i] = represult{v, repcode}
 		}
 
-		repcode, err := replookup(ipa)
-		if err != nil {
-			log.Println(" Lookup error: ", err)
+		// ipa2 := net.ParseIP(ipa)
+		// if ipa2 == nil {
+		//			ip.JSON(500, "Invalid Address")
+		//			log.Println(time.Now(), "Invalid Address: ", ipa)
+		//			return
+		//		}
 
-		}
-		c := represult{ipa, repcode}
+		//		repcode, err := replookup(ipa)
+		//		if err != nil {
+		//			log.Println(" Lookup error: ", err)
+
+		//		}
+		//		c := represult{ipa, repcode}
 
 		//fmt.Println("repcode", c.REP)
 
